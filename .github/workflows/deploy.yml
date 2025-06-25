@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master ]  # Usando a branch master como fonte
+    branches: [ main ]  # Usando a branch main como fonte
   workflow_dispatch:  # Permite acionar manualmente
 
 permissions:
