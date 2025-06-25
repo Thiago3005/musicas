@@ -2,11 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ gh-pages ]  # Branch que contém o código do site
+    branches: [ master ]  # Usando a branch master como fonte
   workflow_dispatch:  # Permite acionar manualmente
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
