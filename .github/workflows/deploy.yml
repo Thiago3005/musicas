@@ -2,29 +2,30 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]  # Usando a branch main como fonte
-  workflow_dispatch:  # Permite acionar manualmente
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Permite que apenas uma implantação em andamento + 1 na fila
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > client/.env
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -35,13 +36,25 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
+          cd client
+          npm ci
 
       - name: Build Frontend
         run: |
-          # Constrói o frontend a partir da raiz do projeto
+          cd client
+          # Configura a base URL para o GitHub Pages
+          echo 'VITE_BASE_URL=/musicas/' > .env
+          
+          # Constrói o frontend
           npm run build
+          
+          # Move os arquivos para o diretório raiz do build
+          cd ..
+          mkdir -p dist
+          cp -r client/dist/* dist/
+          
           # Cria um arquivo .nojekyll para desativar o processamento Jekyll
-          touch dist/public/.nojekyll
+          touch dist/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -49,8 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Caminho para os arquivos estáticos gerados
-          path: 'dist/public/'
+          path: 'dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
