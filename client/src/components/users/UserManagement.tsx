@@ -45,6 +45,7 @@ export function UserManagement() {
   }, []);
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(`${API_BASE}/api/auth/users`, {
