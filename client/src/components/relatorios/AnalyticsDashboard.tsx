@@ -29,7 +29,7 @@ export function AnalyticsDashboard() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const data = await get('/analytics');
+      const data = await get('/api/analytics');
       setAnalyticsData(data);
     } catch (error) {
       console.error('Erro ao carregar analytics:', error);

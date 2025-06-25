@@ -920,6 +920,524 @@ CREATE TABLE musico_indisponibilidade (
 
 ---
 
+## 🚀 DEPLOY NO GITHUB PAGES
+
+### 📋 Visão Geral da Estrutura
+
+O projeto utiliza uma estrutura específica onde o **frontend** (React/Vite) e **backend** (Express) estão separados:
+
+```
+projeto/
+├── client/          # Frontend React/Vite
+│   ├── src/
+│   ├── public/
+│   └── index.html
+├── server/          # Backend Express/Node.js
+├── dist/            # Build final (gerado pelo Vite)
+│   └── public/      # Arquivos estáticos para deploy
+└── package.json     # Configurações do projeto
+```
+
+### 🔧 Preparação para GitHub Pages
+
+#### 1. Configurar Build para Produção
+
+O comando `npm run build` gera os arquivos estáticos em `dist/public/`:
+
+```bash
+npm run build
+```
+
+Isso cria:
+```
+dist/
+└── public/          # Diretório que vai para GitHub Pages
+    ├── index.html
+    ├── assets/
+    │   ├── index-[hash].js
+    │   └── index-[hash].css
+    └── [outros arquivos estáticos]
+```
+
+#### 2. Estrutura para GitHub Actions
+
+Crie o arquivo `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist/public
+        cname: your-custom-domain.com  # Opcional: seu domínio customizado
+```
+
+#### 3. Configuração do Repositório GitHub
+
+**Passo 1: Ativar GitHub Pages**
+1. Vá em Settings > Pages
+2. Source: "Deploy from a branch"
+3. Branch: "gh-pages" (será criada automaticamente)
+4. Folder: "/ (root)"
+
+**Passo 2: Configurar Base URL (se necessário)**
+
+Se seu repositório não está no domínio raiz (ex: `usuario.github.io/projeto`), adicione ao `vite.config.ts`:
+
+```typescript
+export default defineConfig({
+  base: '/nome-do-seu-repositorio/', // Para GitHub Pages
+  // ... resto da configuração
+});
+```
+
+#### 4. Configuração Específica para SPA (Single Page Application)
+
+GitHub Pages precisa de configuração especial para SPAs React:
+
+**Criar `public/404.html`:**
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Música Litúrgica</title>
+    <script type="text/javascript">
+      // Redirecionamento para SPA
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + 
+        '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+**Adicionar script ao `index.html`:**
+```html
+<!-- No <head> do client/index.html -->
+<script type="text/javascript">
+  (function(l) {
+    if (l.search[1] === '/' ) {
+      var decoded = l.search.slice(1).split('&').map(function(s) { 
+        return s.replace(/~and~/g, '&')
+      }).join('?');
+      window.history.replaceState(null, null,
+          l.pathname.slice(0, -1) + decoded + l.hash
+      );
+    }
+  }(window.location))
+</script>
+```
+
+### 🔄 Configuração para Frontend-Only (sem Backend)
+
+Como GitHub Pages **não suporta backend**, você precisa configurar o frontend para funcionar sem servidor:
+
+#### 1. Mock do Backend para Demo
+
+Crie `client/src/hooks/useMockApi.ts`:
+
+```typescript
+// Hook mock para demonstração no GitHub Pages
+export function useMockData() {
+  const musicos = [
+    { id: '1', nome: 'João Silva', funcao: 'Vocal', disponivel: true },
+    { id: '2', nome: 'Maria Santos', funcao: 'Violão', disponivel: true }
+  ];
+  
+  const missas = [
+    { 
+      id: '1', 
+      data: '2024-02-04', 
+      horario: '19:00', 
+      tipo: 'Domingo',
+      musicos: ['1', '2']
+    }
+  ];
+  
+  return { musicos, missas };
+}
+```
+
+#### 2. Configurar Modo Demo
+
+Modifique `client/src/hooks/useApi.ts`:
+
+```typescript
+// Detectar se está no GitHub Pages
+const isGitHubPages = window.location.hostname.includes('github.io');
+
+async function apiRequest(endpoint: string, options: RequestInit = {}) {
+  if (isGitHubPages) {
+    // Usar dados mock no GitHub Pages
+    return getMockData(endpoint);
+  }
+  
+  // Código normal para ambiente com backend
+  const token = localStorage.getItem('authToken');
+  // ... resto do código
+}
+```
+
+### 📦 Script de Deploy Automático
+
+Crie `scripts/deploy.js`:
+
+```javascript
+import { execSync } from 'child_process';
+import fs from 'fs';
+
+// Build do projeto
+console.log('🔨 Building project...');
+execSync('npm run build', { stdio: 'inherit' });
+
+// Verificar se dist/public existe
+if (!fs.existsSync('dist/public')) {
+  console.error('❌ Build failed: dist/public not found');
+  process.exit(1);
+}
+
+// Adicionar arquivo CNAME se necessário
+const customDomain = process.env.CUSTOM_DOMAIN;
+if (customDomain) {
+  fs.writeFileSync('dist/public/CNAME', customDomain);
+  console.log(`📝 Added CNAME: ${customDomain}`);
+}
+
+console.log('✅ Build completed successfully!');
+console.log('📁 Files ready in: dist/public/');
+```
+
+Adicionar ao `package.json`:
+
+```json
+{
+  "scripts": {
+    "deploy:prepare": "node scripts/deploy.js",
+    "deploy:pages": "npm run deploy:prepare && gh-pages -d dist/public"
+  }
+}
+```
+
+### 🎯 Comandos para Deploy Manual
+
+```bash
+# Instalar gh-pages (se não estiver usando GitHub Actions)
+npm install --save-dev gh-pages
+
+# Build e deploy manual
+npm run build
+npx gh-pages -d dist/public
+
+# Ou usar o script automatizado
+npm run deploy:pages
+```
+
+### 🔍 Verificação de Deploy
+
+**1. Checklist pré-deploy:**
+- [ ] `npm run build` executa sem erros
+- [ ] Diretório `dist/public` é criado
+- [ ] `dist/public/index.html` existe
+- [ ] Assets estão em `dist/public/assets/`
+- [ ] Arquivo `404.html` para SPA (se necessário)
+
+**2. Checklist pós-deploy:**
+- [ ] GitHub Pages está ativo em Settings
+- [ ] Branch `gh-pages` foi criada
+- [ ] Site está acessível em `usuario.github.io/repositorio`
+- [ ] Navegação entre páginas funciona
+- [ ] Assets carregam corretamente
+
+### 🚨 Troubleshooting GitHub Pages
+
+**Problema: "404 Page Not Found"**
+- Verificar se branch `gh-pages` existe
+- Confirmar se `publish_dir` no workflow está correto
+- Verificar se `dist/public/index.html` está presente
+
+**Problema: "Assets não carregam"**
+- Verificar `base` no vite.config.ts
+- Confirmar caminhos relativos nos arquivos
+
+**Problema: "SPA routing não funciona"**
+- Adicionar arquivo `404.html`
+- Configurar script de redirecionamento no `index.html`
+
+**Problema: "GitHub Action falha"**
+- Verificar se `GITHUB_TOKEN` tem permissões
+- Confirmar se workflow está na branch main
+- Verificar logs do Actions
+
+### 📚 Recursos Adicionais
+
+- **GitHub Pages Docs:** https://pages.github.com/
+- **Vite Static Deploy:** https://vitejs.dev/guide/static-deploy.html
+- **React Router GitHub Pages:** https://create-react-app.dev/docs/deployment/#github-pages
+
+---
+
+## 🔗 ENDPOINTS DA API
+
+### ⚠️ IMPORTANTE - Prefixo `/api/`
+
+**Quando executando com servidor externo (ex: GitHub Pages + servidor próprio)**, todos os endpoints precisam do prefixo `/api/`:
+
+```javascript
+// ❌ ERRADO - ambiente local/desenvolvimento
+get('/musicos')
+
+// ✅ CORRETO - ambiente com servidor externo
+get('/api/musicos')
+```
+
+### 📋 Lista Completa de Endpoints
+
+#### **🔐 Autenticação**
+```
+POST   /api/auth/login          # Login de usuário
+POST   /api/auth/logout         # Logout de usuário
+POST   /api/auth/register       # Registro de novo usuário
+GET    /api/auth/me             # Dados do usuário logado
+POST   /api/auth/forgot-password # Recuperação de senha
+POST   /api/auth/reset-password  # Reset de senha
+```
+
+#### **👥 Músicos**
+```
+GET    /api/musicos             # Listar todos os músicos
+POST   /api/musicos             # Criar novo músico
+PUT    /api/musicos/:id         # Atualizar músico específico
+DELETE /api/musicos/:id         # Excluir músico específico
+```
+
+#### **📅 Missas**
+```
+GET    /api/missas              # Listar todas as missas
+POST   /api/missas              # Criar nova missa
+PUT    /api/missas/:id          # Atualizar missa específica
+DELETE /api/missas/:id          # Excluir missa específica
+```
+
+#### **🎵 Músicas das Missas**
+```
+GET    /api/missas/:id/musicas  # Listar músicas de uma missa
+POST   /api/musicas             # Adicionar música a uma missa
+DELETE /api/musicas/:id         # Remover música de uma missa
+```
+
+#### **📚 Biblioteca de Músicas**
+```
+GET    /api/biblioteca-musicas  # Listar biblioteca completa
+POST   /api/biblioteca-musicas  # Adicionar música à biblioteca
+DELETE /api/biblioteca-musicas/:id # Remover música da biblioteca
+```
+
+#### **📝 Escalação de Músicos (Missa-Músicos)**
+```
+GET    /api/missa-musicos/:missaId # Músicos escalados para uma missa
+POST   /api/missa-musicos       # Escalar músico para missa
+DELETE /api/missa-musicos/:id   # Remover músico da escalação
+```
+
+#### **❌ Indisponibilidades**
+```
+GET    /api/indisponibilidades  # Listar todas as indisponibilidades
+GET    /api/musicos/:id/indisponibilidades # Indisponibilidades de um músico
+POST   /api/indisponibilidades  # Criar nova indisponibilidade
+PUT    /api/indisponibilidades/:id # Atualizar indisponibilidade
+DELETE /api/indisponibilidades/:id # Excluir indisponibilidade
+```
+
+#### **📋 Anotações dos Músicos**
+```
+GET    /api/musicos/:id/anotacoes # Anotações de um músico
+POST   /api/musicos/:id/anotacoes # Criar anotação para músico
+DELETE /api/anotacoes/:id       # Excluir anotação específica
+```
+
+#### **💡 Sugestões dos Músicos**
+```
+GET    /api/musicos/:id/sugestoes # Sugestões de um músico
+POST   /api/musicos/:id/sugestoes # Criar sugestão para músico
+PUT    /api/sugestoes/:id        # Atualizar status da sugestão
+```
+
+#### **📊 Analytics/Relatórios**
+```
+GET    /api/analytics            # Dados para dashboard analítico
+```
+
+#### **🔍 Busca de Músicas**
+```
+GET    /api/search/music?q=termo # Buscar músicas no YouTube
+POST   /api/search/youtube-to-mp3 # Gerar link MP3 do YouTube
+```
+
+### 🔧 Configuração para Diferentes Ambientes
+
+#### **Ambiente Local (Replit/Desenvolvimento)**
+```javascript
+// useApi.ts - configuração local
+const BASE_URL = ''; // Sem prefixo
+
+async function apiRequest(endpoint: string) {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    // ...configurações
+  });
+}
+
+// Uso: get('/musicos') → GET /musicos
+```
+
+#### **Ambiente com Servidor Externo (GitHub Pages + API)**
+```javascript
+// useApi.ts - configuração para servidor externo
+const BASE_URL = '/api'; // Com prefixo /api
+
+async function apiRequest(endpoint: string) {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    // ...configurações
+  });
+}
+
+// Uso: get('/musicos') → GET /api/musicos
+```
+
+#### **Configuração Automática por Ambiente**
+```javascript
+// useApi.ts - detecção automática
+const isGitHubPages = window.location.hostname.includes('github.io');
+const isExternalServer = window.location.hostname !== 'localhost';
+const BASE_URL = (isGitHubPages || isExternalServer) ? '/api' : '';
+
+async function apiRequest(endpoint: string) {
+  const fullUrl = `${BASE_URL}${endpoint}`;
+  console.log('Fazendo requisição para:', fullUrl); // Debug
+  
+  const response = await fetch(fullUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    ...options,
+  });
+}
+```
+
+### 🚨 Endpoints que Requerem Autenticação
+
+**Todos os endpoints marcados com [🔒] exigem token de autenticação:**
+
+```javascript
+// Headers obrigatórios para endpoints protegidos
+headers: {
+  'Authorization': 'Bearer seu_token_aqui',
+  'Content-Type': 'application/json'
+}
+```
+
+**Lista de endpoints protegidos:**
+- `[🔒] GET /api/musicos`
+- `[🔒] POST /api/musicos` (apenas admin)
+- `[🔒] GET /api/missa-musicos/:missaId`
+- `[🔒] POST /api/missa-musicos`
+- `[🔒] DELETE /api/missa-musicos/:id`
+- `[🔒] GET /api/indisponibilidades`
+- `[🔒] GET /api/musicos/:id/indisponibilidades`
+- `[🔒] POST /api/indisponibilidades` (apenas admin)
+- `[🔒] PUT /api/indisponibilidades/:id` (apenas admin)
+- `[🔒] DELETE /api/indisponibilidades/:id` (apenas admin)
+- `[🔒] GET /api/analytics`
+- `[🔒] GET /api/search/music`
+- `[🔒] POST /api/search/youtube-to-mp3`
+
+### 🛠️ Exemplo de Implementação
+
+```javascript
+// hooks/useApi.ts - implementação completa
+export function useApi() {
+  const isExternalServer = window.location.hostname !== 'localhost' && 
+                           !window.location.hostname.includes('127.0.0.1');
+  const BASE_URL = isExternalServer ? '/api' : '';
+  
+  async function apiRequest(endpoint: string, options: RequestInit = {}) {
+    const token = localStorage.getItem('authToken');
+    const fullUrl = `${BASE_URL}${endpoint}`;
+    
+    const response = await fetch(fullUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...options.headers,
+      },
+      ...options,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+    
+    return response.json();
+  }
+  
+  return {
+    get: (endpoint: string) => apiRequest(endpoint),
+    post: (endpoint: string, data: any) => apiRequest(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    put: (endpoint: string, data: any) => apiRequest(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+    delete: (endpoint: string) => apiRequest(endpoint, {
+      method: 'DELETE',
+    }),
+  };
+}
+```
+
+---
+
 ## 📞 Suporte
 Para dúvidas ou problemas, consulte:
 - Documentação do projeto no repositório

@@ -44,7 +44,7 @@ export function UserManagement() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const data = await get('/auth/users');
+      const data = await get('/api/auth/users');
       setUsers(data);
     } catch (error) {
       console.error('Error fetching users:', error);
