@@ -42,18 +42,10 @@ jobs:
       - name: Build Frontend
         run: |
           cd client
-          # Configura a base URL para o GitHub Pages
-          echo 'VITE_BASE_URL=/musicas/' > .env
-          
-          # Constrói o frontend
           npm run build
-          
-          # Move os arquivos para o diretório raiz do build
           cd ..
           mkdir -p dist
-          cp -r client/dist/* dist/
-          
-          # Cria um arquivo .nojekyll para desativar o processamento Jekyll
+          cp -r dist/public/* dist/
           touch dist/.nojekyll
 
       - name: Setup Pages
