@@ -20,6 +20,8 @@ interface User {
   createdAt: string;
 }
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 export function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export function UserManagement() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch('/api/auth/users', {
+      const response = await fetch(`${API_BASE}/auth/users`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -68,18 +70,22 @@ export function UserManagement() {
     try {
       const token = localStorage.getItem('authToken');
       const url = editingUser 
-        ? `/api/auth/users/${editingUser.id}`
-        : '/api/auth/users';
+        ? `${API_BASE}/auth/users/${editingUser.id}`
+        : `${API_BASE}/auth/users`;
       
       const method = editingUser ? 'PUT' : 'POST';
       
       const payload = { ...formData };
       if (editingUser && !formData.newPassword) {
-        delete payload.newPassword;
+        if (typeof payload.newPassword !== 'undefined') {
+          delete payload.newPassword;
+        }
       }
       if (editingUser) {
         payload.password = formData.newPassword;
-        delete payload.newPassword;
+        if (typeof payload.newPassword !== 'undefined') {
+          delete payload.newPassword;
+        }
       }
 
       const response = await fetch(url, {
@@ -137,7 +143,7 @@ export function UserManagement() {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/auth/users/${id}`, {
+      const response = await fetch(`${API_BASE}/auth/users/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

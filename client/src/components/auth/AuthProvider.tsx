@@ -33,6 +33,8 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       console.log('AuthProvider: Verificando token com o servidor...');
-      const response = await fetch('/api/auth/me', {
+      const response = await fetch(`${API_BASE}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -83,7 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string) => {
     try {
       console.log('AuthProvider: Iniciando login para:', email);
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -132,7 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const token = localStorage.getItem('authToken');
       if (token) {
-        await fetch('/api/auth/logout', {
+        await fetch(`${API_BASE}/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
