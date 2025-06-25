@@ -151,7 +151,7 @@ export function useSupabaseMissas() {
   const fetchMissas = async () => {
     try {
       setLoading(true);
-      const data = await apiRequest('/missas');
+      const data = await apiRequest('/api/missas');
       setMissas(data);
     } catch (error) {
       console.error('Error fetching missas:', error);
@@ -166,7 +166,7 @@ export function useSupabaseMissas() {
 
   const adicionarMissa = async (missaData: Omit<SupabaseMissa, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const newMissa = await apiRequest('/missas', {
+      const newMissa = await apiRequest('/api/missas', {
         method: 'POST',
         body: JSON.stringify(missaData),
       });
@@ -180,7 +180,7 @@ export function useSupabaseMissas() {
 
   const atualizarMissa = async (id: string, missaData: Partial<SupabaseMissa>) => {
     try {
-      const updatedMissa = await apiRequest(`/missas/${id}`, {
+      const updatedMissa = await apiRequest(`/api/missas/${id}`, {
         method: 'PUT',
         body: JSON.stringify(missaData),
       });
@@ -194,7 +194,7 @@ export function useSupabaseMissas() {
 
   const removerMissa = async (id: string) => {
     try {
-      await apiRequest(`/missas/${id}`, { method: 'DELETE' });
+      await apiRequest(`/api/missas/${id}`, { method: 'DELETE' });
       setMissas(prev => prev.filter(m => m.id !== id));
     } catch (error) {
       console.error('Error deleting missa:', error);
@@ -253,7 +253,7 @@ export function useSupabaseMusicos() {
   const fetchMusicos = async () => {
     try {
       setLoading(true);
-      const data = await apiRequest('/musicos');
+      const data = await apiRequest('/api/musicos');
       setMusicos(data);
     } catch (error) {
       console.error('Error fetching musicos:', error);
@@ -268,7 +268,7 @@ export function useSupabaseMusicos() {
 
   const adicionarMusico = async (musicoData: Omit<SupabaseMusico, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const newMusico = await apiRequest('/musicos', {
+      const newMusico = await apiRequest('/api/musicos', {
         method: 'POST',
         body: JSON.stringify(musicoData),
       });
@@ -282,7 +282,7 @@ export function useSupabaseMusicos() {
 
   const atualizarMusico = async (id: string, musicoData: Partial<SupabaseMusico>) => {
     try {
-      const updatedMusico = await apiRequest(`/musicos/${id}`, {
+      const updatedMusico = await apiRequest(`/api/musicos/${id}`, {
         method: 'PUT',
         body: JSON.stringify(musicoData),
       });
@@ -296,7 +296,7 @@ export function useSupabaseMusicos() {
 
   const removerMusico = async (id: string) => {
     try {
-      await apiRequest(`/musicos/${id}`, { method: 'DELETE' });
+      await apiRequest(`/api/musicos/${id}`, { method: 'DELETE' });
       setMusicos(prev => prev.filter(m => m.id !== id));
     } catch (error) {
       console.error('Error deleting musico:', error);
