@@ -306,7 +306,7 @@ export function useSupabaseMusicos() {
 
   const adicionarAnotacao = async (musicoId: string, texto: string) => {
     try {
-      const newAnotacao = await apiRequest(`/musicos/${musicoId}/anotacoes`, {
+      const newAnotacao = await apiRequest(`/api/musicos/${musicoId}/anotacoes`, {
         method: 'POST',
         body: JSON.stringify({ texto }),
       });
@@ -323,7 +323,7 @@ export function useSupabaseMusicos() {
 
   const removerAnotacao = async (anotacaoId: string, musicoId: string) => {
     try {
-      await apiRequest(`/anotacoes/${anotacaoId}`, { method: 'DELETE' });
+      await apiRequest(`/api/anotacoes/${anotacaoId}`, { method: 'DELETE' });
       setAnotacoes(prev => ({
         ...prev,
         [musicoId]: prev[musicoId]?.filter(a => a.id !== anotacaoId) || []
@@ -336,7 +336,7 @@ export function useSupabaseMusicos() {
 
   const adicionarSugestao = async (musicoId: string, texto: string) => {
     try {
-      const newSugestao = await apiRequest(`/musicos/${musicoId}/sugestoes`, {
+      const newSugestao = await apiRequest(`/api/musicos/${musicoId}/sugestoes`, {
         method: 'POST',
         body: JSON.stringify({ texto }),
       });

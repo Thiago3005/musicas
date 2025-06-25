@@ -1159,7 +1159,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path2 from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
-var base = process.env.NODE_ENV === "production" ? "/musicas/" : "/";
+var base = "/musicas/";
 var vite_config_default = defineConfig({
   base,
   plugins: [
@@ -1309,7 +1309,7 @@ var app = express2();
     console.error("\u274C Erro ao executar o seed do banco de dados:", error);
   }
 })();
-var allowedOrigins = process.env.NODE_ENV === "production" ? ["https://seusite.com"] : [
+var allowedOrigins = process.env.NODE_ENV === "production" ? ["https://thiago3005.github.io"] : [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   // Frontend Vite
@@ -1408,7 +1408,7 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
   const port = parseInt(process.env.PORT || "5000", 10);
-  const host = process.env.HOST || "127.0.0.1";
+  const host = process.env.HOST || "0.0.0.0";
   server.listen({
     port,
     host,

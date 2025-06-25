@@ -75,7 +75,7 @@ export function EscalarMusicoModal({ isOpen, onClose, missaId, onMusicoEscalado 
   const fetchMusicos = async () => {
     try {
       setLoading(true);
-      const response = await get('/musicos');
+      const response = await get('/api/musicos');
       setMusicos(response.filter((m: Musico) => m.disponivel));
     } catch (error) {
       console.error('Erro ao carregar músicos:', error);

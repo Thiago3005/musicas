@@ -63,7 +63,7 @@ export function DisponibilidadeManager() {
     try {
       setLoading(true);
       const [musicosData, indisponibilidadesData] = await Promise.all([
-        get('/musicos'),
+        get('/api/musicos'),
         get('/indisponibilidades')
       ]);
       setMusicos(musicosData);

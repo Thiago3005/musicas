@@ -78,7 +78,7 @@ export function EscalacoesDefault({ isOpen, onClose, onAplicarDefault }: Escalac
 
   const fetchMusicos = async () => {
     try {
-      const musicosData = await get('/musicos');
+      const musicosData = await get('/api/musicos');
       setMusicos(musicosData.filter((m: any) => m.disponivel));
     } catch (error) {
       console.error('Erro ao carregar músicos:', error);
