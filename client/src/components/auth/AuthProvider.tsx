@@ -58,7 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       console.log('AuthProvider: Verificando token com o servidor...');
-      const response = await fetch(`${API_BASE}/auth/me`, {
+      const response = await fetch(`${API_BASE}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string) => {
     try {
       console.log('AuthProvider: Iniciando login para:', email);
-      const response = await fetch(`${API_BASE}/auth/login`, {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -134,7 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const token = localStorage.getItem('authToken');
       if (token) {
-        await fetch(`${API_BASE}/auth/logout`, {
+        await fetch(`${API_BASE}/api/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`

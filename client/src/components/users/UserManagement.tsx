@@ -47,7 +47,7 @@ export function UserManagement() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`${API_BASE}/auth/users`, {
+      const response = await fetch(`${API_BASE}/api/auth/users`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -70,8 +70,8 @@ export function UserManagement() {
     try {
       const token = localStorage.getItem('authToken');
       const url = editingUser 
-        ? `${API_BASE}/auth/users/${editingUser.id}`
-        : `${API_BASE}/auth/users`;
+        ? `${API_BASE}/api/auth/users/${editingUser.id}`
+        : `${API_BASE}/api/auth/users`;
       
       const method = editingUser ? 'PUT' : 'POST';
       
@@ -143,7 +143,7 @@ export function UserManagement() {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`${API_BASE}/auth/users/${id}`, {
+      const response = await fetch(`${API_BASE}/api/auth/users/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
