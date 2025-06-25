@@ -35,15 +35,13 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          cd client && npm ci
 
       - name: Build Frontend
         run: |
-          # Apenas constrói o frontend
-          cd client
+          # Constrói o frontend a partir da raiz do projeto
           npm run build
           # Cria um arquivo .nojekyll para desativar o processamento Jekyll
-          touch dist/.nojekyll
+          touch dist/public/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -51,8 +49,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Caminho para os arquivos estáticos gerados (dentro da pasta client)
-          path: 'client/dist/'
+          # Caminho para os arquivos estáticos gerados
+          path: 'dist/public/'
 
       - name: Deploy to GitHub Pages
         id: deployment

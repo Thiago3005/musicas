@@ -4,8 +4,8 @@ node_modules/
 .pnp.js
 
 # Build
-dist/
-dist-ssr/
+# dist/  # Comentado para permitir deploy
+# dist-ssr/  # Comentado para permitir deploy
 *.local
 
 # Arquivos de ambiente
