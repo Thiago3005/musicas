@@ -33,13 +33,17 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Build
         run: |
+          npm ci
+          cd client && npm ci
+
+      - name: Build Frontend
+        run: |
+          # Apenas constrói o frontend
+          cd client
           npm run build
           # Cria um arquivo .nojekyll para desativar o processamento Jekyll
-          touch dist/public/.nojekyll
+          touch dist/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -47,21 +51,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Caminho para os arquivos estáticos gerados
-          path: 'dist/public/'
+          # Caminho para os arquivos estáticos gerados (dentro da pasta client)
+          path: 'client/dist/'
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # Monitora o status da implantação
-  report-status:
-    if: always()
-    runs-on: ubuntu-latest
-    needs: build-and-deploy
-    steps:
-      - name: Check deployment status
-        if: needs.build-and-deploy.result != 'success'
-        run: |
-          echo "Deployment failed! Check the logs above for more information."
-          exit 1
