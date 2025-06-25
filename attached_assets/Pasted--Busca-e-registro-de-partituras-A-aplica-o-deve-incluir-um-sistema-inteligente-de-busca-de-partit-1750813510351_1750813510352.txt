@@ -1,0 +1,57 @@
+🔎 Busca e registro de partituras
+A aplicação deve incluir um sistema inteligente de busca de partituras, com base no nome da música.
+
+Ao buscar por uma música, o sistema pode oferecer:
+
+Resultado do YouTube (para ouvir e visualizar a música);
+
+Link direto para o site utilizado pelo coordenador:
+Cifras e Partituras - Arquidiocese de Goiânia;
+
+Opção de baixar o áudio do YouTube diretamente pelo serviço:
+https://cnvmp3.com/v25 (preferido por não ter propagandas).
+
+Na biblioteca de músicas, cada música deve ter um campo de partitura em texto (.txt ou rich text) para armazenar diretamente o conteúdo da partitura. Esse campo será usado para exibir a partitura na interface de forma rápida e acessível.
+
+🛠️ Ajuste visual no cabeçalho
+Atualmente, a data aparece tanto no topo do sistema (junto ao título "Música Litúrgica") quanto dentro do dashboard.
+
+Sugestão: manter a data apenas no cabeçalho principal fixo, para evitar duplicação visual.
+
+🎼 Melhorias no Card de Missas
+Ao cadastrar ou editar uma missa, o sistema deve permitir:
+
+Selecionar músicas diretamente da biblioteca, com autocomplete ou dropdown;
+
+Opcionalmente, adicionar um link manual (ex: link do YouTube ou de outra fonte externa), mas o uso padrão será via biblioteca.
+
+Para cada parte da missa (Entrada, Ato Penitencial, Ofertório, etc.):
+
+Selecionada a parte, deve-se exibir:
+
+Nome da música atribuída;
+
+Link do YouTube (se houver);
+
+Partitura em texto, se disponível.
+
+📰 Últimas da Igreja (opcional)
+Pode existir uma seção ou card com as últimas informações da Paróquia Nossa Senhora da Boa Viagem de Itabirito.
+
+Fonte recomendada: Instagram oficial da paróquia
+@pnsbvitabirito
+
+Essa seção é opcional e só deve ser implementada se puder agregar valor visual e informativo à interface.
+
+📊 Gráficos úteis no Dashboard
+O coordenador poderá visualizar padrões e tomar decisões com base nos seguintes indicadores:
+
+Gráfico / Componente	O que mostra	Tipo recomendado
+Missas por mês	Quantidade de missas cadastradas nos últimos 6 meses	Gráfico de barras
+Músicos mais atuantes	Ranking de participação por músico	Gráfico de barras horizontal
+Sugestões por status	Quantas sugestões estão pendentes, aprovadas ou recusadas	Gráfico de pizza
+Músicas mais usadas	Top 5 músicas mais frequentes	Lista ou gráfico de colunas
+Disponibilidade do coral	Dias com maior ou menor número de músicos disponíveis	Heatmap ou gráfico de linha
+Partes da missa mais carentes	Quais partes ainda estão sem músicas atribuídas nas próximas missas	Indicadores ou barras de progresso
+
+Esses gráficos tornam o uso mais estratégico e ajudam o coordenador a antecipar necessidades e melhorar a organização litúrgica.

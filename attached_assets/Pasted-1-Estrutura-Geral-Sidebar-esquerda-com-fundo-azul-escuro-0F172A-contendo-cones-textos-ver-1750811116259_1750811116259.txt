@@ -1,0 +1,111 @@
+1. Estrutura Geral
+Sidebar (à esquerda) com fundo azul escuro (#0F172A) contendo ícones + textos verticais. Deve incluir as seguintes seções:
+
+Missas (ativa, com fundo mais claro e ícone azul)
+
+Músicos
+
+Músicas
+
+Histórico
+
+Os ícones devem ser minimalistas (estilo lucide-react ou heroicons).
+
+Sidebar fixa, com logotipo da aplicação no topo ("🎵 Música Litúrgica").
+
+2. Header (Topo fixo)
+Localizado na parte superior da tela, fora da sidebar.
+
+Deve conter:
+
+Título principal: "Música Litúrgica"
+
+Subtítulo: "Organização completa para missas católicas para Boa Viagem"
+
+Data atual: Exibir "Terça-Feira, 24 de Junho de 2025", alinhada à direita com fonte discreta.
+
+Fonte recomendada: Inter, Medium ou SemiBold.
+
+3. Cards Resumo (Abaixo do Título)
+Quatro cards com métricas da aplicação, com ícones grandes, cantos arredondados (rounded-2xl) e sombra suave (shadow-md):
+
+Total de Missas
+
+Músicos Cadastrados
+
+Músicos Disponíveis
+
+Sugestões Pendentes
+
+Cada card deve ter:
+
+Ícone grande (lado esquerdo)
+
+Texto curto e informativo
+
+Valor destacado (ex: número grande)
+
+4. Barra de Ações
+Barra de busca centralizada: “Buscar missa, músico, ou data...”
+
+Botão "+ Nova Missa" à direita, com fundo escuro (#0F172A), texto branco, bordas arredondadas e ícone de "+".
+
+5. Área de Missas
+Cards verticais para cada missa cadastrada.
+
+Cada card deve conter:
+
+Título da missa (ex: "Adoração")
+
+Data: (ex: "04 de fevereiro de 2025")
+
+Horário: (ex: "04:45")
+
+Total de músicos: (ex: "1 músico")
+
+Número de músicas escolhidas (ex: "1 música")
+
+Botões de ação:
+
+“Ver” (ícone de olho, fundo claro, borda escura)
+
+“Editar” (azul escuro, destaque)
+
+“Excluir” (vermelho, com ícone de lixeira)
+
+Cards com espaçamento generoso (p-4 ou mais), bordas suaves (rounded-xl), e separados visualmente com margens (mb-4).
+
+6. Página de Músicos
+Cada músico deve ter:
+
+Foto/avatar circular (opcional)
+
+Nome completo
+
+Função (ex: Violão)
+
+Contatos: e-mail e telefone com ícones
+
+Anotações com campo de adicionar e lista das anotações anteriores
+
+Sugestões com status visual:
+
+Pendente (laranja)
+
+Implementada (verde)
+
+Recusada (vermelho claro)
+
+Minhas Indisponibilidades: lista de datas + botão para adicionar
+
+7. Recursos Funcionais Essenciais
+Sistema de notificações: Informar quando um músico é atribuído ou quando uma sugestão é avaliada.
+
+Validações de campos (ex: evitar nomes de missa duplicados).
+
+Confirmações modais para ações como “Excluir”.
+
+Sistema de permissões: Admin, Coordenador, Músico (diferentes níveis de acesso).
+
+Modo claro e escuro com toggle.
+

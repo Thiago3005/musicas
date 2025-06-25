@@ -1,0 +1,165 @@
+Crie uma interface de aplicação web chamada “Música Litúrgica”, focada na organização de músicas, missas e músicos para o coral da paróquia de Boa Viagem.
+
+A aplicação deve ter um layout moderno, total integração com o banco de dados interno da IA, com dados sempre sincronizados em tempo real e estrutura pensada para uso principal por um único administrador (o coordenador do coral).
+
+👤 Contexto de uso principal
+O usuário principal será o coordenador do coral, responsável por todas as ações: cadastrar missas, atribuir músicos, marcar indisponibilidades, registrar sugestões, gerenciar músicas etc.
+
+Músicos não irão acessar o sistema diretamente (por enquanto). O coordenador receberá informações externas (como WhatsApp) e registrará na plataforma.
+
+Portanto, a interface deve ser otimizada para uso solo e direto, com fluxos simples, rápidos e sem distrações.
+
+🧱 1. Estrutura de layout geral
+📌 Sidebar (esquerda)
+Fixa, com fundo azul escuro (#0F172A)
+
+Ícones + textos para:
+
+Dashboard
+
+Missas
+
+Músicos
+
+Músicas
+
+Sugestões
+
+Histórico / Relatórios
+
+A aba ativa deve ter destaque visual (azul claro ou traço lateral).
+
+Sidebar pode ser recolhível para economia de espaço.
+
+📌 Header (topo fixo)
+Título: "Música Litúrgica"
+
+Subtítulo: "Organização completa para missas católicas para Boa Viagem"
+
+Data atual exibida à direita: "Terça-feira, 24 de Junho de 2025"
+
+📊 2. Dashboard (visão geral)
+Quatro cards de resumo com ícones grandes e números:
+
+Total de Missas
+
+Músicos Cadastrados
+
+Músicos Disponíveis (considerando indisponibilidades registradas)
+
+Sugestões Pendentes
+
+Estilo clean, responsivo, com sombra suave, rounded-2xl, ícones à esquerda e números à direita.
+
+Campo de busca: “Buscar missa, músico ou data...”
+
+Botão de ação “+ Nova Missa”, com destaque visual escuro e ícone “+”.
+
+📅 3. Seção de Missas
+Cards verticais para cada missa com:
+
+Nome da missa (ex: "Adoração")
+
+Data (ex: "04/02/2025")
+
+Horário (ex: "04:45")
+
+Total de músicos atribuídos
+
+Total de músicas definidas
+
+Ações:
+
+Ver (ícone de olho)
+
+Editar (azul escuro)
+
+Excluir (vermelho)
+
+👥 4. Página de Músicos
+Cada músico deve exibir:
+
+Foto/avatar
+
+Nome, função (ex: Violão), e-mail e telefone
+
+Área de anotações rápidas
+
+Lista de indisponibilidades, com botão “+ Adicionar”
+
+Lista de sugestões feitas pelo músico (registradas pelo coordenador)
+
+Botões “Editar” e “Excluir”
+
+🎵 5. Seção de Músicas
+Catálogo com lista de músicas organizadas por partes da missa:
+
+Entrada, Ato Penitencial, Ofertório, Comunhão, Final, etc.
+
+Filtros por tipo, tom, ocasião
+
+Histórico de uso por missa
+
+Botão “+ Nova Música” com formulário direto
+
+💬 6. Seção de Sugestões
+Exibe todas as sugestões registradas (pelo coordenador em nome dos músicos)
+
+Filtros por status:
+
+Pendente (laranja)
+
+Implementada (verde)
+
+Recusada (vermelho claro)
+
+Campos:
+
+Nome do músico (selecionável)
+
+Tipo da sugestão
+
+Observações
+
+Ações rápidas: aprovar, rejeitar, editar
+
+🧠 7. Integração total com o banco de dados interno da IA
+A IA deve garantir que:
+
+Todos os dados da UI estejam em sincronia reativa com o banco interno
+
+Mudanças como criação/edição de missa, alteração de músicos, nova sugestão ou indisponibilidade sejam refletidas imediatamente
+
+Campos exibam estados de loading ou vazio quando apropriado
+
+Exemplos de fluxo:
+Se uma indisponibilidade é registrada, o músico automaticamente não aparece como “disponível” para aquela data
+
+Ao adicionar uma missa, é possível já atribuir músicas e músicos disponíveis diretamente
+
+Ao excluir uma música do catálogo, ela desaparece das sugestões disponíveis em futuras missas
+
+🛡️ 8. Permissões e acesso
+O sistema não deve exigir login multiusuário neste momento
+
+Todos os acessos e permissões são centralizados no coordenador (admin único)
+
+A estrutura de permissões pode existir, mas ficar desabilitada ou oculta até ser necessário habilitar acesso para músicos no futuro
+
+🌙 9. Funcionalidades extras recomendadas
+Modo escuro
+
+Visual de calendário (mensal e semanal)
+
+Relatórios PDF (mensais ou por evento)
+
+Comentários internos por música ou missa
+
+Painel de escala de músicos
+
+Histórico de músicas por missa
+
+Sistema de backup automático
+
+Integração com notificações ou lembretes por e-mail/WhatsApp (futuro)
+

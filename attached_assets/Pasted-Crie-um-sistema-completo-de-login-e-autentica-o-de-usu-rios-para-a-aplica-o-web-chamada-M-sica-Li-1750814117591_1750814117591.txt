@@ -1,0 +1,69 @@
+Crie um sistema completo de login e autenticação de usuários para a aplicação web chamada “Música Litúrgica”, com suporte para dois tipos de usuários ativos desde o início:
+
+Administrador (coordenador do coral) — acesso completo a todas as funcionalidades da aplicação.
+
+Músico — acesso restrito ao seu próprio perfil, lista de missas em que está escalado e sistema para registrar indisponibilidades.
+
+👥 Estrutura de Usuários
+Cada usuário deve ter os seguintes dados:
+
+Nome completo
+
+E-mail (único, usado no login)
+
+Senha (sempre armazenada criptografada, ex: bcrypt)
+
+Tipo de usuário: "admin" ou "musico"
+
+Campos adicionais para músicos: instrumento, telefone, foto (avatar)
+
+🧑‍💻 Funcionalidades do Sistema de Login
+Tela de login com campos para:
+
+E-mail
+
+Senha
+
+Botão "Entrar"
+
+Validação dos campos obrigatórios com feedbacks visuais claros em caso de erro.
+
+Recuperação de senha por e-mail, usando token temporário para segurança.
+
+Criptografia segura da senha (bcrypt ou equivalente).
+
+Sessão de usuário com expiração automática após inatividade (ex: 30 minutos).
+
+Rota /login redireciona automaticamente usuários já autenticados para seus respectivos painéis.
+
+Após login:
+
+Usuários do tipo admin são direcionados ao dashboard completo com acesso a todas as funcionalidades.
+
+Usuários do tipo musico são direcionados ao painel restrito, onde podem visualizar escala, registrar indisponibilidade e consultar partituras.
+
+🔒 Segurança e Controle de Acesso
+Todas as rotas protegidas por middleware que verifica a autenticação do usuário.
+
+Separação clara dos painéis e permissões:
+
+Admins podem acessar todos os módulos: missas, músicos, músicas, sugestões, relatórios, dashboard.
+
+Músicos acessam apenas seu painel pessoal com funcionalidades restritas.
+
+👨‍👦 Gerenciamento de usuários e permissões — Como o administrador pode adicionar outros admins
+O sistema deve permitir que o administrador (seu pai) gerencie usuários, inclusive adicionando novos administradores:
+
+O administrador acessa a seção “Gerenciar Usuários” (disponível somente para admins).
+
+Nesta seção, ele pode:
+
+Cadastrar novos usuários, preenchendo nome, e-mail, senha e definindo o tipo do usuário (admin ou musico).
+
+Editar usuários existentes, incluindo a possibilidade de alterar o tipo do usuário (promover um músico a admin, ou vice-versa).
+
+Visualizar lista de usuários com seus respectivos tipos para controle e organização.
+
+O sistema deve garantir que apenas usuários com perfil admin possam criar ou editar outros admins, mantendo a segurança e controle do sistema.
+
+Com essa funcionalidade, seu pai pode delegar responsabilidades e criar uma equipe de administradores confiáveis para ajudar na gestão do coral.
