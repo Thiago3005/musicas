@@ -22,7 +22,7 @@ const app = express();
 
 // Configuração CORS
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ['https://seusite.com'] // Substitua pelo domínio do seu frontend em produção
+  ? ['https://thiago3005.github.io'] // Domínio do frontend em produção
   : [
       'http://localhost:5173', 
       'http://127.0.0.1:5173', // Frontend Vite
