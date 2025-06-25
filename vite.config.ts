@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-// Configuração base para GitHub Pages
-const base = process.env.NODE_ENV === 'production' ? '/musicas/' : '/';
+// base fixo para GitHub Pages
+const base = '/musicas/';
 
 export default defineConfig({
   base,
